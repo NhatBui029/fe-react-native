@@ -1,15 +1,15 @@
 import { View, Text , Button} from "react-native";
 
-function LoginScreen({navigation}) {
+function SignupScreen({navigation}) {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Login!</Text>
+            <Text>Signup!</Text>
             <Button
-                title="Signup"
-                onPress={() => navigation.navigate('Singup')}
+                title="Login"
+                onPress={() => navigation.navigate('Login')}
             />
         </View>
     );
 }
 
-export default LoginScreen
+export default SignupScreen
