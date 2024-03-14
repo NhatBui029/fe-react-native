@@ -11,9 +11,9 @@ function OrderStackNavigator() {
     <Stack.Navigator
        
     >
-      <Stack.Screen name="Cart" component={CartScreen} />
-      <Stack.Screen name="Delevery Address" component={DeleveryAddressScreen} />
-      <Stack.Screen name="Payment Method" component={PaymentMethodScreen} />
+      <Stack.Screen name="Giỏ hàng " component={CartScreen} />
+      <Stack.Screen name="Địa chỉ" component={DeleveryAddressScreen} />
+      <Stack.Screen name="Thanh toán" component={PaymentMethodScreen} />
     </Stack.Navigator>
   );
 }

@@ -1,15 +1,34 @@
-import { View, Text , Button} from "react-native";
+import { View, StyleSheet, ScrollView, FlatList } from "react-native";
+import CardProduct from "../Components/CardProduct";
+import HomeSearch from "../Components/HomeSearch";
+import products from "../data/products";
 
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Home!</Text>
-            <Button
-                title="Go to Detail"
-                onPress={() => navigation.navigate('Detail')}
-            />
+        <View style={styles.mainHome}>
+            <HomeSearch />
+            <ScrollView contentContainerStyle={styles.listProduct}>
+                {products.map((product, index) => (
+                    <CardProduct
+                        key={product.id}                       
+                        product={product}
+                        navigation={navigation}
+                    />
+                ))}
+            </ScrollView>
         </View>
     );
 }
 
+const styles = StyleSheet.create({
+    mainHome: {
+        marginBottom: 120
+    },
+    listProduct: {
+        marginTop: 10,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    }
+})
 export default HomeScreen
