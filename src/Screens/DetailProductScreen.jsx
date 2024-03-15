@@ -5,6 +5,7 @@ import StarRating from "../Components/StarRating";
 import { Ionicons } from "@expo/vector-icons";
 import view_price from "../helper/view_price";
 import ReviewProduct from "../Components/ReviewProduct";
+import NumericInput from "../Components/NumericInput";
 
 function DetailProductScreen({ navigation, route }) {
     const { productId } = route.params;
@@ -30,21 +31,11 @@ function DetailProductScreen({ navigation, route }) {
                         <Text style={styles.descProduct}>{product.description.replace(/\s+/g, ' ')}</Text>
                         <View style={styles.quantityProduct}>
                             <Text>Số lượng</Text>
-                            <View style={styles.changeQuantity}>
-                                <Ionicons
-                                    style={styles.icon}
-                                    name="remove" size={18}
-                                    onPress={() => setQuantity(prev => prev - 1)}
-                                    disabled={quantity > 1 ? false : true}
-                                />
-                                <Text style={styles.contentQuantity}>{quantity}</Text>
-                                <Ionicons
-                                    style={styles.icon}
-                                    name="add" size={18}
-                                    onPress={() => setQuantity(prev => prev + 1)}
-                                    disabled={quantity < product.countInStock ? false : true}
-                                />
-                            </View>
+                            <NumericInput 
+                                quantity={quantity} 
+                                setQuantity={setQuantity}
+                                countInStock={product.countInStock}
+                            />
                         </View>
                         <Button
                             style={styles.addToCartBtn}
@@ -99,27 +90,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderTopColor: '#ccc',
         borderTopWidth: 1,
-    },
-    changeQuantity: {
-        flexDirection: 'row',
-        marginRight: 20,
-        alignItems: 'center',
-        paddingVertical: 5,
-        width: 100,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
-    },
-    icon: {
-        flex: 1,
-        textAlign: 'center',
-    },
-    contentQuantity: {
-        flex: 2,
-        textAlign: 'center',
-        borderLeftWidth: 1,
-        borderRightWidth: 1,
-        borderColor: '#ccc',
     },
 })
 

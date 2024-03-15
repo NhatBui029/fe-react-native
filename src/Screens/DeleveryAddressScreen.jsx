@@ -6,7 +6,7 @@ function DeleveryAddressScreen({navigation}) {
             <Text>Delevery Address!</Text>
             <Button
                 title="Continue"
-                onPress={() => navigation.navigate('Payment Method')}
+                onPress={() => navigation.navigate('Thanh toán')}
             />
         </View>
     );
