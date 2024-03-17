@@ -1,8 +1,8 @@
-import { TextInput, View, StyleSheet } from "react-native";
+import { TextInput, View, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Badge } from "react-native-elements";
 
-function HomeSearch() {
+function HomeSearch({navigation}) {
     return (
         <View style={styles.homeSearch}>
             <TextInput
@@ -10,14 +10,14 @@ function HomeSearch() {
                 placeholder="Nhập tên sản phẩm..."
                 keyboardType="default"
             />
-            <View>
-                <Ionicons name='cart' size={30} color='white' options={{ tabBarBadge: 3 }} />
+            <Pressable onPress={()=> navigation.navigate('Chat')}>
+                <Ionicons name='logo-wechat' size={35} color='white' options={{ tabBarBadge: 3 }} />
                 <Badge
                     status="error"
                     value={3}
-                    containerStyle={{ position: 'absolute', top: -10, right: -10 }}
+                    containerStyle={{ position: 'absolute', top: -5, right: -5 }}
                 />
-            </View>
+            </Pressable>
         </View>
     )
 };

@@ -6,7 +6,7 @@ import products from "../data/products";
 function HomeScreen({ navigation }) {
     return (
         <View style={styles.mainHome}>
-            <HomeSearch />
+            <HomeSearch navigation={navigation}/>
             <ScrollView contentContainerStyle={styles.listProduct}>
                 {products.map((product, index) => (
                     <CardProduct

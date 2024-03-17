@@ -1,10 +1,30 @@
-import { Slot } from 'expo-router';
+import { Slot, useRouter, useSegments } from 'expo-router';
 import { View } from 'react-native';
+import { AuthContextProvider, useAuth } from '../context/authContext';
+import { useEffect } from 'react';
 
-export default function _layout() {
+const MainLayout = () => {
+    const { isAuthenticated } = useAuth();
+    const segments = useSegments();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (typeof isAuthenticated == 'undefined') return;
+        
+        const inApp = segments[0] == '(app)';
+        
+        if (isAuthenticated && !inApp) router.replace('home');
+        else if (!isAuthenticated) router.replace('signIn');
+
+    }, [isAuthenticated])
+
+    return <Slot />
+}
+
+export default function RootLayout() {
     return (
-        <View style={{flex: 1}}>
-            <Slot />
-        </View>
+        <AuthContextProvider>
+            <MainLayout />
+        </AuthContextProvider>
     );
 }
