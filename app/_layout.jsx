@@ -14,7 +14,7 @@ const MainLayout = () => {
         const inApp = segments[0] == '(app)';
         
         if (isAuthenticated && !inApp) router.replace('home');
-        else if (!isAuthenticated) router.replace('signIn');
+        else if (!isAuthenticated) router.replace('start');
 
     }, [isAuthenticated])
 

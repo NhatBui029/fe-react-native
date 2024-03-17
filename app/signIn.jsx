@@ -6,7 +6,7 @@ import { Input } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function signIn() {
-    const router = useRouter()
+    const router = useRouter();
     const emailRef = useRef('');
     const passwordRef = useRef('');
     const { login } = useAuth();

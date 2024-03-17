@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect,  useState } from 'react'
 import InputChat from '../Components/InputChat'
-import { Timestamp, addDoc, collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, setDoc, where } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, setDoc, where } from 'firebase/firestore';
 import { db, userRef } from '../../firebaseConfig';
 import { useAuth } from '../../context/authContext';
 import getRoomId from '../helper/getRoomId';
 import ListMessage from '../Components/ListMessage';
+import {ADMIN_USERID} from '@env'
 
 export default function ChatScreen() {
     const [messages, setMessages] = useState([]);
@@ -37,7 +38,7 @@ export default function ChatScreen() {
     }, [admin]);
 
     async function getAdmin() {
-        const q = query(userRef, where('userId', '==', 'dREmDQQaFgeHZFDrSkf0uUS0Wud2'));
+        const q = query(userRef, where('userId', '==', process.env.ADMIN_USERID));
         const querySnapshot = await getDocs(q);
         const data = [];
         querySnapshot.forEach((doc) => {
