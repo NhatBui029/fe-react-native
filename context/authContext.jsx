@@ -28,9 +28,6 @@ const AuthContextProvider = ({ children }) => {
         return unsub;
     }, [])
 
-    useEffect(() => {
-        // console.log('user: ', user)
-    }, [user])
 
     async function updateUserState(userId) {
         const docRef = doc(db, 'users', userId);

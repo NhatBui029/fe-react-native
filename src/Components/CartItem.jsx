@@ -11,7 +11,11 @@ export default function CartItem({ item, navigation }) {
     };
 
     return (
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.card}>
+        <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.card}
+        >
             <CheckBox checked size={20} />
             <TouchableOpacity onPress={() => goToDetail(item.id)}>
                 <View style={styles.main}>

@@ -1,13 +1,35 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TextInput, ScrollView,TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { suggestsClient, suggestsAdmin } from '../data/suggests'
+import { useAuth } from '../../context/authContext'
 
 export default function InputChat({ message, setMessage, handleSendMessage }) {
+    const { user } = useAuth();
+    const suggests = user?.userId == process.env.ADMIN_USERID ? suggestsAdmin : suggestsClient;
+    
+    function handleSetMessage(message) {
+        setMessage(message);
+    }
+
     return (
         <View style={styles.inputChat}>
-            <View style={styles.suggest}>
-                <Text>suggest</Text>
-            </View>
+            <ScrollView
+                contentContainerStyle={styles.suggests}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+            >
+                {suggests.map((suggest, index) => {
+                    return (
+                        <TouchableOpacity
+                            key={index}
+                            onPress={() => handleSetMessage(suggest)}
+                        >
+                            <Text style={styles.suggest}>{suggest}</Text>
+                        </TouchableOpacity>
+                    )
+                })}
+            </ScrollView>
             <View style={styles.input}>
                 <Ionicons name='add-circle' size={25} color={'green'} />
                 <TextInput
@@ -28,11 +50,19 @@ export default function InputChat({ message, setMessage, handleSendMessage }) {
 }
 const styles = StyleSheet.create({
     inputChat: {
-        backgroundColor: 'white'
-
+        backgroundColor: 'white',
+    },
+    suggests: {
+        gap: 10,
+        marginTop: 10,
+        marginLeft: 5
     },
     suggest: {
-
+        backgroundColor: 'green',
+        paddingHorizontal: 5,
+        paddingVertical: 5,
+        color: 'white',
+        borderRadius: 10
     },
     input: {
         flexDirection: 'row',

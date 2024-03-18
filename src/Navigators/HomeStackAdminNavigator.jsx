@@ -1,12 +1,14 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import DetailProductScreen from '../Screens/DetailProductScreen';
-import HomeScreen from '../Screens/HomeScreen';
 import ChatScreen from '../Screens/ChatScreen';
 import RightHeaderChat from '../Components/RightHeaderChat';
+import ListChatScreen from '../Screens/ListChatScreen';
+import React,{ useRef } from 'react';
 
 const Stack = createStackNavigator();
 
 function HomeStackNavigator() {
+  const nameRef = useRef();
+
   return (
     <>
       <Stack.Navigator
@@ -14,9 +16,8 @@ function HomeStackNavigator() {
           { headerShown: false }
         }
       >
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Detail" component={DetailProductScreen} />
-        <Stack.Screen name="Chat" component={ChatScreen}
+        <Stack.Screen name="ListChat" component={ListChatScreen} />
+        <Stack.Screen name="ChatAdmin" component={ChatScreen}
         />
       </Stack.Navigator>
     </>

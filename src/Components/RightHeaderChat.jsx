@@ -15,7 +15,6 @@ export default function RightHeaderChat() {
 const styles = StyleSheet.create({
     rightHeader:{
         flexDirection: 'row',
-        marginRight: 20,
         gap: 20,
         alignItems: 'center'
     }

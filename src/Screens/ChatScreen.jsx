@@ -1,22 +1,26 @@
-import { View, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native'
-import React, { useEffect,  useState } from 'react'
+import { View, Text, StyleSheet, Alert, ActivityIndicator, Keyboard } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import InputChat from '../Components/InputChat'
 import { Timestamp, addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, setDoc, where } from 'firebase/firestore';
 import { db, userRef } from '../../firebaseConfig';
 import { useAuth } from '../../context/authContext';
 import getRoomId from '../helper/getRoomId';
 import ListMessage from '../Components/ListMessage';
-import {ADMIN_USERID} from '@env'
+import HeaderChat from '../Components/HeaderChat';
 
-export default function ChatScreen() {
+export default function ChatScreen({ route , navigation}) {
     const [messages, setMessages] = useState([]);
     const { user } = useAuth();
     const [admin, setAdmin] = useState();
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(true);
+    const { partner } = route.params ?  route.params : 'null';
+    const scrollViewRef = useRef(null);
+
 
     useEffect(() => {
-        getAdmin();
+        if (partner) setAdmin(partner);
+        else getAdmin();
         createRoomIfNotExists();
     }, []);
 
@@ -33,9 +37,24 @@ export default function ChatScreen() {
                 setLoading(false);
             });
 
-            return unsub;
+            const KeyBoardDidShowListener = Keyboard.addListener('keyboardDidShow', updateScrollView)
+
+            return () => {
+                KeyBoardDidShowListener.remove();
+                unsub();
+            }
         }
     }, [admin]);
+
+    useEffect(() => {
+        updateScrollView();
+    }, [messages])
+
+    function updateScrollView() {
+        setTimeout(() => {
+            scrollViewRef?.current?.scrollToEnd({ animated: true })
+        }, 100)
+    }
 
     async function getAdmin() {
         const q = query(userRef, where('userId', '==', process.env.ADMIN_USERID));
@@ -87,7 +106,11 @@ export default function ChatScreen() {
 
     return (
         <View style={styles.chatRoom}>
-            <ListMessage messages={messages} />
+            <HeaderChat name={admin?.username} navigation={navigation}/>
+            <ListMessage
+                messages={messages}
+                scrollViewRef={scrollViewRef}
+            />
             <InputChat
                 message={message}
                 setMessage={setMessage}

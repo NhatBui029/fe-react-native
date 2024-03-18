@@ -2,12 +2,13 @@ import { ScrollView, StyleSheet } from 'react-native'
 import React from 'react'
 import ItemMessage from './ItemMessage'
 
-export default function ListMessage({ messages }) { 
+export default function ListMessage({ messages , scrollViewRef}) { 
     return (
         <ScrollView 
             showsVerticalScrollIndicator={false} 
             contentContainerStyle={styles.listMessage} 
             invertStickyHeaders={true}
+            ref={scrollViewRef}
         >
             {
                 messages.map((message, index) => {
