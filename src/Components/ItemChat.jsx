@@ -27,7 +27,7 @@ const ItemChat = ({ partner }) => {
   function renderLastMessage(){
     let str = user?.userId == lastMessage?.userId ? 'Bạn: ': '';
     str += lastMessage?.text ? lastMessage.text : '';
-    return str;
+    return str.substring(0, 45)+'...';
   }
 
   return (
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   contentItem: {
     paddingVertical: 5,
-    gap: 5
+    gap: 5,
   },
   name: {
     fontWeight: '600',

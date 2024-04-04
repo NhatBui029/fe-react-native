@@ -3,10 +3,32 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeStackNavigator from '../../src/Navigators/HomeStackNavigator';
 import OrderStackNavigator from '../../src/Navigators/OrderStackNavigator';
 import ProfileTabNavigator from '../../src/Navigators/ProfileTabNavigator';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../context/authContext';
+import { BASE_URL } from "@env";
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const [quantity, setQuantity] = useState(0);
+  const {reload, user} = useAuth();
+
+  useEffect(() => {
+    const getListCartDeatil = async (user) => {
+        try {
+            const list = await axios.post(`${BASE_URL}/cart/getAll`, {
+                userId: user.userId
+            });
+            setQuantity(list.data.length)
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    getListCartDeatil(user);
+}, [reload])
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -29,7 +51,7 @@ export default function App() {
       })}
     >
       <Tab.Screen name="Trang chủ" component={HomeStackNavigator} />
-      <Tab.Screen name="Giỏ hàng" component={OrderStackNavigator} options={{ tabBarBadge: 3 }} />
+      <Tab.Screen name="Giỏ hàng" component={OrderStackNavigator} options={{ tabBarBadge: quantity }} />
       <Tab.Screen name="Cá nhân" component={ProfileTabNavigator} />
     </Tab.Navigator>
   );

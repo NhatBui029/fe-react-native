@@ -1,0 +1,42 @@
+.shopCategory {
+    margin-top: 80px;
+    padding: 0 120px;
+
+    img {
+        width: 100%;
+    }
+
+    .indexSortBy {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+
+        span {
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .sort {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 20px;
+            border: 1px #888 solid;
+            border-radius: 40px;
+
+            img {
+                width: auto;
+                margin: 0 5px;
+            }
+        }
+    }
+
+    .products {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 20px 0;
+    }
+}

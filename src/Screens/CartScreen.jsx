@@ -1,27 +1,30 @@
 import { View, Text, Button, ScrollView, StyleSheet, Image } from "react-native";
-import img1 from '../../assets/1.png'
 import CartItem from "../Components/CartItem";
-
-const products = [
-    {
-        id: 1,
-        name: 'Giày Nike Jordan1 Low',
-        price: '1230000',
-        image: img1,
-        countInStock: 4,
-        quantity: 4
-    },
-    {
-        id: 2,
-        name: 'Giày Nike Jordan1 Low',
-        price: '1230000',
-        image: img1,
-        countInStock: 100,
-        quantity: 8
-    }
-]
+import { useEffect, useState } from "react";
+import { useAuth } from "../../context/authContext";
+import axios from "axios";
+import { BASE_URL } from "@env";
 
 function CartScreen({ navigation }) {
+
+    const [list, setList] = useState([]);
+    const { user , reload} = useAuth();
+
+    useEffect(() => {
+        const getListCartDeatil = async (user) => {
+            try {
+                console.log(user)
+                const list = await axios.post(`${BASE_URL}/cart/getAll`, {
+                    userId: user.userId
+                });
+                setList(list.data);
+            } catch (e) {
+                console.log(e.message)
+            }
+        }
+
+        getListCartDeatil(user);
+    }, [reload])
 
     const handleClickCheckOut = () => {
         navigation.navigate('Địa chỉ');
@@ -29,14 +32,13 @@ function CartScreen({ navigation }) {
     return (
         <>
             <ScrollView contentContainerStyle={styles.containerr}>
-                {products.map(product => <CartItem item={product} key={product.id} navigation={navigation} />)}
+                {list.map((item, index) => <CartItem item={item} key={index} navigation={navigation} />)}
             </ScrollView>
             <View style={styles.checkOutBtn}>
                 <Button
                     title="Thanh toán"
                     onPress={handleClickCheckOut}
                     color={'green'}
-                    
                 />
             </View>
         </>
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
     },
     checkOutBtn: {
         position: 'absolute',
-        bottom: 10, 
+        bottom: 10,
         left: 0,
         right: 0
     }

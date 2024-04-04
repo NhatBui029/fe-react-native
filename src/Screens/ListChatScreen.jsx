@@ -22,6 +22,8 @@ const ListChatScreen = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
             data.push(doc.data());
         });
+        // console.log('data: ' ,data)
+        // console.log(process.env.ADMIN_USERID)
         setUsers(data)
     }
 
@@ -30,9 +32,9 @@ const ListChatScreen = ({ navigation }) => {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.container}>
             <HeaderListChat/>
-            <View>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 {users.map((user, index) => {
                     console.log(user)
                     return (
@@ -44,8 +46,8 @@ const ListChatScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     )
                 })}
-            </View>
-        </ScrollView>
+            </ScrollView >
+        </View>
     )
 }
 

@@ -1,38 +1,92 @@
 import { View, Image, Text, Button, ScrollView, StyleSheet } from "react-native";
-import products from "../data/products";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "../Components/StarRating";
-import { Ionicons } from "@expo/vector-icons";
 import view_price from "../helper/view_price";
 import ReviewProduct from "../Components/ReviewProduct";
 import NumericInput from "../Components/NumericInput";
+import axios from "axios";
+import { TouchableOpacity } from "react-native";
+import IconBorder from "../Components/IconBorder";
+import OptionProduct from "../Components/OptionProduct";
+import { useAuth } from "../../context/authContext";
+import { BASE_URL } from "@env";
 
 function DetailProductScreen({ navigation, route }) {
     const { productId } = route.params;
-    const [product, setProduct] = useState(null);
+    const [product, setProduct] = useState();
     const [quantity, setQuantity] = useState(1);
+    const [selectOption, setSelectOption] = useState();
+    const { user, setReload } = useAuth();
 
     useEffect(() => {
-        setProduct(products.find(product => product.id == productId))
+        const getProductById = async (productId) => {
+            try {
+                const res = await axios.get(`${BASE_URL}/product/getById/${productId}`);
+                setProduct(res.data)
+            } catch (e) {
+                console.log(e.message)
+            }
+        }
+        getProductById(productId);
     }, [])
+
+    async function handleAddToCart() {
+        const res = await axios.post(`${BASE_URL}/cart/add`, {
+            userId: user.userId,
+            productId: product.id,
+            optionId: selectOption,
+            quantity: quantity
+        });
+        setReload(prev => !prev);
+        console.log('add to cart: ', res.data);
+    }
+
+    function handleSelectOption(optionId) {
+        setSelectOption(optionId);
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.detail}>
             {product &&
                 <>
-                    <Image source={product.image} style={styles.imageDetail} />
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+                        <IconBorder name={'arrow-back'} size={20} />
+                    </TouchableOpacity>
+                    <Image
+                        source={{ uri: product.images[0].url }}
+                        style={styles.imageDetail}
+                    />
                     <View style={styles.mainDetail}>
                         <Text style={styles.nameProduct}>{product.name}</Text>
                         <View style={styles.ratingProduct}>
                             <StarRating rating={product.rating} sizeStar={14} />
                             <Text>Kho: {product.countInStock} | Đã bán: {product.sold}</Text>
                         </View>
-                        <Text style={styles.priceProduct}>{view_price(product.price)}</Text>
+                        <View style={{display: "flex", gap: 15, flexDirection: 'row'}}>
+                            <Text style={styles.newPriceProduct}>{view_price(product.newPrice)}</Text>
+                            <Text style={styles.oldPriceProduct}>{view_price(product.oldPrice)}</Text>
+                        </View>
                         <Text style={styles.descProduct}>{product.description.replace(/\s+/g, ' ')}</Text>
+                        <Text>Loại</Text>
+                        <ScrollView
+                            contentContainerStyle={styles.optionsProduct}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                        >
+                            {
+                                product.options.map(option => {
+                                    return (
+                                        <TouchableOpacity key={option.id} onPress={() => handleSelectOption(option.id)}>
+                                            <OptionProduct option={option} selectOptionId={selectOption} />
+                                        </TouchableOpacity>
+                                    )
+                                })
+                            }
+                        </ScrollView>
                         <View style={styles.quantityProduct}>
                             <Text>Số lượng</Text>
-                            <NumericInput 
-                                quantity={quantity} 
+                            <NumericInput
+                                quantity={quantity}
                                 setQuantity={setQuantity}
                                 countInStock={product.countInStock}
                             />
@@ -41,9 +95,11 @@ function DetailProductScreen({ navigation, route }) {
                             style={styles.addToCartBtn}
                             title="Thêm vào giỏ hàng"
                             color='green'
+                            onPress={handleAddToCart}
+                            disabled={!selectOption}
                         />
                     </View>
-                    <ReviewProduct productId={product.id} rating={product.rating}/>
+                    <ReviewProduct productId={product.id} rating={product.rating} />
                 </>
             }
         </ScrollView>
@@ -53,6 +109,17 @@ function DetailProductScreen({ navigation, route }) {
 const styles = StyleSheet.create({
     detail: {
 
+    },
+    optionsProduct: {
+        flexDirection: 'row',
+        gap: 15,
+        marginVertical: 5,
+    },
+    backBtn: {
+        position: 'absolute',
+        top: 30,
+        left: 20,
+        zIndex: 100
     },
     imageDetail: {
         width: '100%',
@@ -69,10 +136,15 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600'
     },
-    priceProduct: {
+    newPriceProduct: {
         color: 'red',
         fontSize: 20,
         fontWeight: '600'
+    },
+    oldPriceProduct:{
+        color: '#ccc',
+        fontSize: 16,
+        textDecorationLine: 'line-through' 
     },
     ratingProduct: {
         flexDirection: 'row',
@@ -80,7 +152,10 @@ const styles = StyleSheet.create({
     },
     descProduct: {
         paddingRight: 2,
-        textAlign: 'justify'
+        textAlign: 'justify',
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1,
+        paddingBottom: 5
     },
     quantityProduct: {
         flexDirection: 'row',

@@ -7,12 +7,14 @@ import {
     signInWithEmailAndPassword,
     signOut
 } from 'firebase/auth';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(undefined);
+    const [reload, setReload] = useState(true);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => {
@@ -66,14 +68,23 @@ const AuthContextProvider = ({ children }) => {
 
     const register = async (username, email, password) => {
         try {
-            const response = await createUserWithEmailAndPassword(auth, email, password);
+            const resFireBase = await createUserWithEmailAndPassword(auth, email, password);
 
-            setDoc(doc(db, 'users', response?.user?.uid), {
+            setDoc(doc(db, 'users', resFireBase?.user?.uid), {
                 username,
-                userId: response?.user?.uid
+                userId: resFireBase?.user?.uid
             })
 
-            return { success: true, data: response.user }
+            const resMysql = await axios.post(`${process.env.BASE_URL}/user/add`, {
+                username: username,
+                email: email,
+                password: password,
+                userId: resFireBase?.user?.uid
+            });
+
+            console.log('create acc : ', resMysql.data)
+
+            return { success: true, data: resFireBase.user, resMysql: resMysql.data }
         } catch (err) {
             let msg = err.message;
             if (msg.includes('auth/email-already-in-use')) msg = 'Email đã tồn tại !'
@@ -83,7 +94,7 @@ const AuthContextProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register, reload, setReload }}>
             {children}
         </AuthContext.Provider>
     )

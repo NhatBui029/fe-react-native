@@ -13,7 +13,7 @@ export default function signUn() {
   const passwordRef = useRef('');
 
   async function handleRegister() {
-    let res = await register(usernameRef.current, emailRef.current, passwordRef.current);
+    const res = await register(usernameRef.current, emailRef.current, passwordRef.current);
 
     if (!res.success) {
       Alert.alert('Đăng kí', res.msg);

@@ -3,35 +3,104 @@ import { CheckBox } from "react-native-elements";
 import NumericInput from "./NumericInput";
 import view_price from "../helper/view_price";
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "../../context/authContext";
+import { BASE_URL } from "@env";
 
 export default function CartItem({ item, navigation }) {
+    const { id, optionId, productId } = item;
+    const [product, setProduct] = useState(null);
+    const [option, setOption] = useState(null);
+    const [quantity, setQuantity] = useState(parseInt(item.quantity));
+    const { setReload } = useAuth();
+
+    useEffect(() => {
+        const getProductById = async (productId) => {
+            try {
+                const res = await axios.get(`${BASE_URL}/product/getById/${productId}`);
+                setProduct(res.data)
+            } catch (e) {
+                console.log(e.message)
+            }
+        }
+        getProductById(productId);
+    }, []);
+
+    useEffect(() => {
+        const getOptionNameById = async (optionId) => {
+            try {
+                const res = await axios.get(`${BASE_URL}/option/getById/${optionId}`);
+                setOption(res.data)
+            } catch (e) {
+                console.log(e.message)
+            }
+        }
+        getOptionNameById(optionId);
+    }, []);
+
+    useEffect(() => {
+        const updateQuantity = async (id, quantity) => {
+            try {
+                const res = await axios.patch(`${BASE_URL}/cart/update`, {
+                    id: id,
+                    quantity: quantity
+                });
+                setQuantity(parseInt(res.data.quantity));
+            } catch (e) {
+                console.log(e.message)
+            }
+        }
+        updateQuantity(id, quantity);
+    }, [quantity])
 
     const goToDetail = (productId) => {
         navigation.navigate('Detail', { productId: productId });
     };
 
+    async function handleDeleteCart(id) {
+        console.log('delete ok>');
+        const deleteCart = await axios.delete(`${BASE_URL}/cart/delete/${id}`);
+        setReload(prev => !prev);
+    }
+
     return (
+
         <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.card}
         >
-            <CheckBox checked size={20} />
-            <TouchableOpacity onPress={() => goToDetail(item.id)}>
-                <View style={styles.main}>
-                    <Image source={item.image} style={styles.image} />
-                    <View style={styles.content}>
-                        <Text >{item.name}</Text>
-                        <Text style={styles.price}>{view_price(item.price)}</Text>
-                        <NumericInput
-                            quantity={item.quantity}
-                        />
-                    </View>
-                </View>
-            </TouchableOpacity>
-            <View style={styles.remove}>
-                <Ionicons name="trash" size={30} color={'white'} />
-            </View>
+            {
+                product &&
+                <>
+                    <CheckBox checked size={20} />
+                    <TouchableOpacity onPress={() => goToDetail(product.id)}>
+                        <View style={styles.main}>
+                            <Image source={{ uri: product.images[0].url }} style={styles.image} />
+                            <View style={styles.content}>
+                                <Text >{product.name.substring(0, 32)}</Text>
+                                <Text style={styles.price}>{view_price(product.newPrice)}</Text>
+                                <View style={{ display: "flex", gap: 15, flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text>Loại: {option}</Text>
+                                    <NumericInput
+                                        quantity={quantity}
+                                        setQuantity={setQuantity}
+                                        countInStock={parseInt(product.countInStock)}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDeleteCart(id)}>
+                        <View style={styles.remove}>
+                            <Ionicons name="trash" size={30} color={'white'} />
+                        </View>
+                    </TouchableOpacity>
+
+                </>
+            }
+
         </ScrollView>
     )
 };

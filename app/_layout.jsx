@@ -14,7 +14,9 @@ const MainLayout = () => {
         const inApp = segments[0] == '(app)';
 
         if (isAuthenticated && !inApp) {
-            if (user && user.userId == ADMIN_USERID) router.replace('admin');
+            // console.log(user.userId)
+            // console.log(process.env.ADMIN_USERID)
+            if (user && user.userId == process.env.ADMIN_USERID) router.replace('admin');
             else router.replace('home');
         }
         else if (!isAuthenticated) router.replace('start');

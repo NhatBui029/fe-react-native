@@ -63,6 +63,7 @@ export default function ChatScreen({ route , navigation}) {
         querySnapshot.forEach((doc) => {
             data.push(doc.data());
         });
+        // console.log(data)
         setAdmin(data[0])
     }
 
