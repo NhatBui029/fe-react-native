@@ -13,19 +13,20 @@ export default function CartItem({ item, navigation }) {
     const [product, setProduct] = useState(null);
     const [option, setOption] = useState(null);
     const [quantity, setQuantity] = useState(parseInt(item.quantity));
-    const { setReload } = useAuth();
+    const { setReload} = useAuth();
 
     useEffect(() => {
         const getProductById = async (productId) => {
             try {
-                const res = await axios.get(`${BASE_URL}/product/getById/${productId}`);
-                setProduct(res.data)
+                const url = `${BASE_URL}/product/getById/${productId}`.toString();
+                const res = await axios.get(url);
+                setProduct(res.data);
             } catch (e) {
                 console.log(e.message)
             }
         }
         getProductById(productId);
-    }, []);
+    }, [item]);
 
     useEffect(() => {
         const getOptionNameById = async (optionId) => {
@@ -59,7 +60,7 @@ export default function CartItem({ item, navigation }) {
     };
 
     async function handleDeleteCart(id) {
-        console.log('delete ok>');
+        console.log('delete ok>', id);
         const deleteCart = await axios.delete(`${BASE_URL}/cart/delete/${id}`);
         setReload(prev => !prev);
     }

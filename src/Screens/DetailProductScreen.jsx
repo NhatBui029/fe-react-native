@@ -21,7 +21,8 @@ function DetailProductScreen({ navigation, route }) {
     useEffect(() => {
         const getProductById = async (productId) => {
             try {
-                const res = await axios.get(`${BASE_URL}/product/getById/${productId}`);
+                const url =`${BASE_URL}/product/getById/${productId}`.toString();
+                const res = await axios.get(url);
                 setProduct(res.data)
             } catch (e) {
                 console.log(e.message)
@@ -38,7 +39,6 @@ function DetailProductScreen({ navigation, route }) {
             quantity: quantity
         });
         setReload(prev => !prev);
-        console.log('add to cart: ', res.data);
     }
 
     function handleSelectOption(optionId) {

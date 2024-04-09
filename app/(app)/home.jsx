@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import HomeStackNavigator from '../../src/Navigators/HomeStackNavigator';
 import OrderStackNavigator from '../../src/Navigators/OrderStackNavigator';
-import ProfileTabNavigator from '../../src/Navigators/ProfileTabNavigator';
+import UserTabNavigator from '../../src/Navigators/UserTabNavigator';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/authContext';
@@ -12,15 +12,16 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [quantity, setQuantity] = useState(0);
-  const {reload, user} = useAuth();
+  const { reload, user } = useAuth();
 
   useEffect(() => {
     const getListCartDeatil = async (user) => {
         try {
-            const list = await axios.post(`${BASE_URL}/cart/getAll`, {
+            const url = `${BASE_URL}/cart/getAll`.toString();
+            const list = await axios.post(url,{
                 userId: user.userId
             });
-            setQuantity(list.data.length)
+            setQuantity(list.data.length);
         } catch (e) {
             console.log(e.message)
         }
@@ -52,7 +53,7 @@ export default function App() {
     >
       <Tab.Screen name="Trang chủ" component={HomeStackNavigator} />
       <Tab.Screen name="Giỏ hàng" component={OrderStackNavigator} options={{ tabBarBadge: quantity }} />
-      <Tab.Screen name="Cá nhân" component={ProfileTabNavigator} />
+      <Tab.Screen name="Cá nhân" component={UserTabNavigator} />
     </Tab.Navigator>
   );
 }

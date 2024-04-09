@@ -7,17 +7,17 @@ import { BASE_URL } from "@env";
 
 function CartScreen({ navigation }) {
 
-    const [list, setList] = useState([]);
+    const [list, setList] = useState();
     const { user , reload} = useAuth();
 
     useEffect(() => {
         const getListCartDeatil = async (user) => {
             try {
-                console.log(user)
-                const list = await axios.post(`${BASE_URL}/cart/getAll`, {
+                const url = `${BASE_URL}/cart/getAll`.toString();
+                const list = await axios.post(url,{
                     userId: user.userId
                 });
-                setList(list.data);
+                setList(prev => [...list.data]);
             } catch (e) {
                 console.log(e.message)
             }
@@ -32,7 +32,7 @@ function CartScreen({ navigation }) {
     return (
         <>
             <ScrollView contentContainerStyle={styles.containerr}>
-                {list.map((item, index) => <CartItem item={item} key={index} navigation={navigation} />)}
+                {list && list.map((item, index) => <CartItem item={item} key={index} navigation={navigation}/>)}
             </ScrollView>
             <View style={styles.checkOutBtn}>
                 <Button

@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
     "@react-native-async-storage/async-storage": "^1.22.3",
+    "@react-native-community/datetimepicker": "^7.6.4",
     "@react-navigation/bottom-tabs": "^6.5.18",
     "@react-navigation/material-top-tabs": "^6.6.11",
     "@react-navigation/native": "^6.1.15",

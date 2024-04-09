@@ -12,7 +12,9 @@ function HomeScreen({ navigation }) {
     useEffect(() => {
         const getAllProduct = async () => {
             try {
-                const res = await axios.get(`${BASE_URL}/product/getAll`);
+                console.log(BASE_URL)
+                const url = `${BASE_URL}/product/getAll`.toString();
+                const res = await axios.get(url);
                 setProducts(res.data);
             } catch (e) {
                 console.log('ko goi dc api: ', e)

@@ -8,9 +8,7 @@ const Stack = createStackNavigator();
 
 function OrderStackNavigator() {
   return (
-    <Stack.Navigator
-       
-    >
+    <Stack.Navigator>
       <Stack.Screen name="Giỏ hàng " component={CartScreen} />
       <Stack.Screen name="Địa chỉ" component={DeleveryAddressScreen} />
       <Stack.Screen name="Thanh toán" component={PaymentMethodScreen} />
