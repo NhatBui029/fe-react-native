@@ -18,7 +18,7 @@ const renderScene = ({ route }) => {
   }
 };
 
-export default function Tabs() {
+export default function Tabs({user}) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([

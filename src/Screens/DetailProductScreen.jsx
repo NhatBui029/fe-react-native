@@ -1,4 +1,4 @@
-import { View, Image, Text, Button, ScrollView, StyleSheet } from "react-native";
+import { View, Image, Text, Button, ScrollView, StyleSheet, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import StarRating from "../Components/StarRating";
 import view_price from "../helper/view_price";
@@ -17,13 +17,17 @@ function DetailProductScreen({ navigation, route }) {
     const [quantity, setQuantity] = useState(1);
     const [selectOption, setSelectOption] = useState();
     const { user, setReload } = useAuth();
+    const [countInStock, setCountInStock] = useState(0);
+    const [sold, setSold] = useState(0);
 
     useEffect(() => {
         const getProductById = async (productId) => {
             try {
-                const url =`${BASE_URL}/product/getById/${productId}`.toString();
+                const url = `${BASE_URL}/product/getById/${productId}`.toString();
                 const res = await axios.get(url);
-                setProduct(res.data)
+                setProduct(res.data);
+                setCountInStock(res.data.countInStock);
+                setSold(res.data.sold);
             } catch (e) {
                 console.log(e.message)
             }
@@ -39,10 +43,13 @@ function DetailProductScreen({ navigation, route }) {
             quantity: quantity
         });
         setReload(prev => !prev);
+        Alert.alert('Thông báo',"Đã thêm vào giỏ hàng !");
     }
 
-    function handleSelectOption(optionId) {
+    function handleSelectOption(optionId, countInStock, sold) {
         setSelectOption(optionId);
+        setCountInStock(countInStock);
+        setSold(sold);
     }
 
     return (
@@ -60,9 +67,9 @@ function DetailProductScreen({ navigation, route }) {
                         <Text style={styles.nameProduct}>{product.name}</Text>
                         <View style={styles.ratingProduct}>
                             <StarRating rating={product.rating} sizeStar={14} />
-                            <Text>Kho: {product.countInStock} | Đã bán: {product.sold}</Text>
+                            <Text>Kho: {countInStock} | Đã bán: {sold}</Text>
                         </View>
-                        <View style={{display: "flex", gap: 15, flexDirection: 'row'}}>
+                        <View style={{ display: "flex", gap: 15, flexDirection: 'row' }}>
                             <Text style={styles.newPriceProduct}>{view_price(product.newPrice)}</Text>
                             <Text style={styles.oldPriceProduct}>{view_price(product.oldPrice)}</Text>
                         </View>
@@ -76,7 +83,7 @@ function DetailProductScreen({ navigation, route }) {
                             {
                                 product.options.map(option => {
                                     return (
-                                        <TouchableOpacity key={option.id} onPress={() => handleSelectOption(option.id)}>
+                                        <TouchableOpacity key={option.id} onPress={() => handleSelectOption(option.id, option.countInStock, option.sold)}>
                                             <OptionProduct option={option} selectOptionId={selectOption} />
                                         </TouchableOpacity>
                                     )
@@ -88,7 +95,7 @@ function DetailProductScreen({ navigation, route }) {
                             <NumericInput
                                 quantity={quantity}
                                 setQuantity={setQuantity}
-                                countInStock={product.countInStock}
+                                countInStock={countInStock}
                             />
                         </View>
                         <Button
@@ -141,10 +148,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600'
     },
-    oldPriceProduct:{
+    oldPriceProduct: {
         color: '#ccc',
         fontSize: 16,
-        textDecorationLine: 'line-through' 
+        textDecorationLine: 'line-through'
     },
     ratingProduct: {
         flexDirection: 'row',

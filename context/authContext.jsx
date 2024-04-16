@@ -17,10 +17,10 @@ const AuthContextProvider = ({ children }) => {
     const [reload, setReload] = useState(true);
 
     useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (user) => {
+        const unsub = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setIsAuthenticated(true);
-                updateUserState(user.uid);
+                await updateUserState(user.uid);
             } else {
                 setIsAuthenticated(false);
                 setUser(null);
@@ -32,22 +32,28 @@ const AuthContextProvider = ({ children }) => {
 
 
     async function updateUserState(userId) {
-        const docRef = doc(db, 'users', userId);
-        const docSnap = await getDoc(docRef);
+        try {
+            const docRef = doc(db, 'users', userId);
+            const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            let data = docSnap.data();
-            setUser({
-                ...user,
-                username: data.username,
-                userId: data.userId
-            })
+            if (docSnap.exists()) {
+                let data = docSnap.data();
+                setUser({
+                    ...user,
+                    username: data.username,
+                    userId: data.userId
+                })
+            }
+        } catch (e) {
+            console.log(e)
         }
     }
 
     const login = async (email, password) => {
         try {
+            console.log('logiin')
             const res = await signInWithEmailAndPassword(auth, email, password);
+            // await updateUserState(res.user.uid);
             return { success: true }
         } catch (err) {
             let msg = err.message;
@@ -69,18 +75,17 @@ const AuthContextProvider = ({ children }) => {
     const register = async (username, email, password) => {
         try {
             const resFireBase = await createUserWithEmailAndPassword(auth, email, password);
-
-            setDoc(doc(db, 'users', resFireBase?.user?.uid), {
-                username,
-                userId: resFireBase?.user?.uid
-            })
-
-            const resMysql = await axios.post(`${process.env.BASE_URL}/user/add`, {
+            const resMysql = await axios.post(`${process.env.BASE_URL}/user/register`, {
                 username: username,
                 email: email,
                 password: password,
                 userId: resFireBase?.user?.uid
             });
+
+            await setDoc(doc(db, 'users', resFireBase?.user?.uid), {
+                username,
+                userId: resFireBase?.user?.uid
+            })
 
             console.log('create acc : ', resMysql.data)
 

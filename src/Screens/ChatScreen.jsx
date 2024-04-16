@@ -17,12 +17,12 @@ export default function ChatScreen({ route , navigation}) {
     const { partner } = route.params ?  route.params : 'null';
     const scrollViewRef = useRef(null);
 
-
+    
     useEffect(() => {
         if (partner) setAdmin(partner);
         else getAdmin();
         createRoomIfNotExists();
-    }, []);
+    }, [route]);
 
     useEffect(() => {
         if (admin) {
@@ -63,7 +63,6 @@ export default function ChatScreen({ route , navigation}) {
         querySnapshot.forEach((doc) => {
             data.push(doc.data());
         });
-        // console.log(data)
         setAdmin(data[0])
     }
 

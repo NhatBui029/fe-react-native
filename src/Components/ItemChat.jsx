@@ -9,6 +9,7 @@ import { useAuth } from '../../context/authContext';
 const ItemChat = ({ partner }) => {
   const [lastMessage, setLastMessage] = useState();
   const { user } = useAuth();
+  const [inputCss, setInputCss] = useState();
 
   useEffect(() => {
     const roomId = getRoomId(user?.userId, partner?.userId);
@@ -18,16 +19,27 @@ const ItemChat = ({ partner }) => {
 
     const unsub = onSnapshot(q, querySnapshot => {
       const allMessage = querySnapshot.docs.map(doc => doc.data());
-      setLastMessage(allMessage.length> 0 ?  allMessage[allMessage.length - 1] : {text: 'Nothings'})
+      setLastMessage(allMessage.length > 0 ? allMessage[allMessage.length - 1] : { text: 'Nothings' })
+      // if (allMessage.length > 0) {
+      //   if (user?.userId == lastMessage?.userId) setInputCss('yourself');
+      //   else setInputCss('partner');
+      // } else setInputCss('nothings');
     });
 
     return unsub;
   }, []);
 
-  function renderLastMessage(){
-    let str = user?.userId == lastMessage?.userId ? 'Bạn: ': '';
+  useEffect(() => {
+    if (lastMessage?.text !== 'Nothings') {
+      if (user?.userId == lastMessage?.userId) setInputCss('yourself');
+      else setInputCss('partner');
+    } else setInputCss('nothings');
+  }, [lastMessage])
+
+  function renderLastMessage() {
+    let str = user?.userId == lastMessage?.userId ? 'Bạn: ' : '';
     str += lastMessage?.text ? lastMessage.text : '';
-    return str.substring(0, 45)+'...';
+    return str.substring(0, 45) + '...';
   }
 
   return (
@@ -39,7 +51,7 @@ const ItemChat = ({ partner }) => {
       />
       <View style={styles.contentItem}>
         <Text style={styles.name}>{partner.username}</Text>
-        <Text>{renderLastMessage()}</Text>
+        <Text style={[styles.contentItem, styles[inputCss]]}>{renderLastMessage()}</Text>
       </View>
     </View>
   )
@@ -60,5 +72,14 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: '600',
     fontSize: 18
+  },
+  nothings: {
+    color: '#ccc'
+  },
+  yourself: {
+
+  },
+  partner: {
+    color: 'green'
   }
 })

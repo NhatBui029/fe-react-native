@@ -13,7 +13,7 @@ export default function CartItem({ item, navigation }) {
     const [product, setProduct] = useState(null);
     const [option, setOption] = useState(null);
     const [quantity, setQuantity] = useState(parseInt(item.quantity));
-    const { setReload} = useAuth();
+    const {reload, setReload} = useAuth();
 
     useEffect(() => {
         const getProductById = async (productId) => {
@@ -32,6 +32,7 @@ export default function CartItem({ item, navigation }) {
         const getOptionNameById = async (optionId) => {
             try {
                 const res = await axios.get(`${BASE_URL}/option/getById/${optionId}`);
+                console.log(res.data)
                 setOption(res.data)
             } catch (e) {
                 console.log(e.message)
@@ -83,11 +84,11 @@ export default function CartItem({ item, navigation }) {
                                 <Text >{product.name.substring(0, 32)}</Text>
                                 <Text style={styles.price}>{view_price(product.newPrice)}</Text>
                                 <View style={{ display: "flex", gap: 15, flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text>Loại: {option}</Text>
+                                    <Text>Loại: {option?.name}</Text>
                                     <NumericInput
                                         quantity={quantity}
                                         setQuantity={setQuantity}
-                                        countInStock={parseInt(product.countInStock)}
+                                        countInStock={parseInt(option?.countInStock)}
                                     />
                                 </View>
                             </View>

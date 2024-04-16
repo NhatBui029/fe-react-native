@@ -13,7 +13,7 @@ const Personal = () => {
     const [name, setName] = useState();
     const [phone, setPhone] = useState();
     const [address, setAddress] = useState();
-    const { user } = useAuth();
+    const { user, setReload } = useAuth();
 
     const Inputs = [
         {
@@ -57,7 +57,7 @@ const Personal = () => {
                 const res = await axios.post(url, {
                     userId: user.userId,
                 });
-                console.log(res.data)
+
                 setName(res.data.name);
                 setPhone(res.data.phone);
                 setAddress(res.data.address.address);
@@ -94,7 +94,7 @@ const Personal = () => {
             // setEmail(res.data.email);
             // setPassword('');
             // setNewPassword('');
-
+            setReload(prev => !prev);
             Alert.alert('Thông báo', 'Cập nhật tài khoản thành công')
         } catch (e) {
             console.log('ko goi dc api: ', e)

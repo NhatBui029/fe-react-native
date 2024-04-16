@@ -22,8 +22,7 @@ const ListChatScreen = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
             data.push(doc.data());
         });
-        // console.log('data: ' ,data)
-        // console.log(process.env.ADMIN_USERID)
+
         setUsers(data)
     }
 
