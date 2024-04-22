@@ -20,7 +20,7 @@ const AuthContextProvider = ({ children }) => {
         const unsub = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setIsAuthenticated(true);
-                await updateUserState(user.uid);
+                await updateUserState(user?.uid);
             } else {
                 setIsAuthenticated(false);
                 setUser(null);
@@ -41,7 +41,7 @@ const AuthContextProvider = ({ children }) => {
                 setUser({
                     ...user,
                     username: data.username,
-                    userId: data.userId
+                    userId: data?.userId
                 })
             }
         } catch (e) {
@@ -66,6 +66,7 @@ const AuthContextProvider = ({ children }) => {
     const logout = async () => {
         try {
             await signOut(auth);
+            console.log('sign out')
             return { success: true }
         } catch (err) {
             return { success: false, msg: err.message, error: e }

@@ -35,7 +35,6 @@ const ListChatScreen = ({ navigation }) => {
             <HeaderListChat/>
             <ScrollView showsVerticalScrollIndicator={false}>
                 {users.map((user, index) => {
-                    console.log(user)
                     return (
                         <TouchableOpacity
                             key={index}

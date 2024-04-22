@@ -5,7 +5,7 @@ import { useAuth } from '../../context/authContext'
 export default function ItemMessage({ message }) {
     const { user } = useAuth();
 
-    if (user.userId == message.userId) {
+    if (user.userId == message?.userId) {
         return (
             <View style={styles.messageRight}>
                 <Text style={styles.textRight}>{message.text}</Text>

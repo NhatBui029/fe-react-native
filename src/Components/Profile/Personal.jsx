@@ -60,8 +60,8 @@ const Personal = () => {
 
                 setName(res.data.name);
                 setPhone(res.data.phone);
-                setAddress(res.data.address.address);
-                setDate(new Date(res.data.birthday))
+                setAddress(res.data.address?.address);
+                setDate(new Date(res.data.birthday));
             } catch (e) {
                 console.log('ko goi dc api: ', e)
             }
@@ -90,10 +90,6 @@ const Personal = () => {
                 birthday: date
             });
 
-            // setUsername(res.data.username);
-            // setEmail(res.data.email);
-            // setPassword('');
-            // setNewPassword('');
             setReload(prev => !prev);
             Alert.alert('Thông báo', 'Cập nhật tài khoản thành công')
         } catch (e) {

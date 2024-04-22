@@ -32,7 +32,6 @@ export default function CartItem({ item, navigation }) {
         const getOptionNameById = async (optionId) => {
             try {
                 const res = await axios.get(`${BASE_URL}/option/getById/${optionId}`);
-                console.log(res.data)
                 setOption(res.data)
             } catch (e) {
                 console.log(e.message)

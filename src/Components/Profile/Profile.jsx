@@ -103,7 +103,7 @@ const Profile = () => {
                             secureTextEntry={input.type === "password"}
                             value={input.value}
                             onChangeText={value => handdleChangeText(value, input.func)}
-                            editable={input.label != 'Email'}
+                            editable={input.label != 'Email' && input.label != 'Tên đăng nhập'}
                         />
                     </View>
                 ))}

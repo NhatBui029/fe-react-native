@@ -11,7 +11,7 @@ const Start = () => {
             source={start}
         >
             <View style={styles.container}>
-                <Text style={styles.title}>Ecommerce</Text>
+                <Text style={styles.title}>Shoe Market</Text>
                 <Text style={styles.text} onPress={()=>router.push('signIn')}>Đăng nhập</Text>
                 <Text style={styles.text} onPress={()=>router.push('signUp')}>Đăng kí</Text>
             </View>
